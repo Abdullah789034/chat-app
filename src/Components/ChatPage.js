@@ -4,11 +4,16 @@ import '../CSS/ChatPage.css';
 
 const ChatPage = ({ socket }) => {
   const [message, setMessage] = useState('');
-  const [cmessages, setcMessages] = useState([]); // Store chat messages
-  const [activeUsers, setActiveUsers] = useState(['User1', 'User2', 'User3']);
+  const [cmessages, setcMessages] = useState([]); 
   let usName = localStorage.getItem('userName');
+  const [userNum,setuserNum] = useState(0);
 
   useEffect(() => {
+    socket.on('usernum',(n)=>{
+      setuserNum(n);
+    },[socket]);
+    
+    
     socket.on('recieve_msg', (data) => {
       setcMessages([...cmessages, { user: data.usName, text: data.message }]);
     });
@@ -33,14 +38,9 @@ const ChatPage = ({ socket }) => {
 
   return (
     <div className="chat-body-container">
-      <div className="active-users-panel">
-        <h3>Active Users</h3>
-        <ul>
-          {activeUsers.map((user, index) => (
-            <li key={index}>{user}</li>
-          ))}
-        </ul>
-      </div>
+    <div>
+      <h2>Chat Members = {userNum}</h2>
+    </div>
       <div className="chat-area">
         {/* Display chat messages */}
         {cmessages.map((msg, index) => (

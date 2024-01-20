@@ -7,6 +7,7 @@ const cors = require('cors');
 app.use(cors())
 
 const server= http;
+let user=0;
 
 const io = new Server (server, {
   cors: {
@@ -18,16 +19,20 @@ const io = new Server (server, {
 //Add this before the app.get() block
 io.on('connection', (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
+  user++;
+  
+
 
   socket.on("send_message", (data)=>{
     console.log(data)
-    socket.emit("sender",data);
     socket.broadcast.emit("recieve_msg",data);
     
   })
   socket.on('disconnect', () => {
+    user--;
     console.log('🔥: A user disconnected');
   });
+  socket.emit('usernum', user);
 });
 
 
